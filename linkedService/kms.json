@@ -1,0 +1,10 @@
+{
+	"name": "kms",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://cts-vault-dev-uksouth.vault.azure.net/"
+		}
+	}
+}
