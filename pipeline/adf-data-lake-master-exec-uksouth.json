@@ -1,5 +1,5 @@
 {
-	"name": "CTS-Master-Exec-Pipeline",
+	"name": "adf-data-lake-master-exec-uksouth",
 	"properties": {
 		"activities": [
 			{
@@ -52,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "pipeline2",
+						"referenceName": "adf-data-lake-raw-zone",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
@@ -102,7 +102,7 @@
 				}
 			},
 			{
-				"name": "Stored Procedure1",
+				"name": "End Failure Logging",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
