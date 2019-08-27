@@ -1,10 +1,10 @@
 {
-	"name": "pipeline1",
+	"name": "CTS-Master-Exec-Pipeline",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy Data1",
-				"type": "Copy",
+				"name": "Start Logging",
+				"type": "SqlServerStoredProcedure",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
@@ -15,29 +15,146 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "BlobSource",
-						"recursive": true
-					},
-					"sink": {
-						"type": "BlobSink"
-					},
-					"enableStaging": false
+					"storedProcedureName": "[dbo].[sp_BatchLogStart]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
 				},
-				"inputs": [
+				"linkedServiceName": {
+					"referenceName": "lks_azure_db_monitor",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Master Execution",
+				"type": "ExecutePipeline",
+				"dependsOn": [
 					{
-						"referenceName": "ds_landing_file",
-						"type": "DatasetReference"
+						"activity": "Start Logging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
-				"outputs": [
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pipeline2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "End Success Logging",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
 					{
-						"referenceName": "AzureBlob1",
-						"type": "DatasetReference"
+						"activity": "Master Execution",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
-				]
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_BatchLogEnd]",
+					"storedProcedureParameters": {
+						"BatchLogStatus": {
+							"value": {
+								"value": "@variables('vLogStatusSuccess')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "lks_azure_db_monitor",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Stored Procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Master Execution",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_BatchLogEnd]",
+					"storedProcedureParameters": {
+						"BatchLogStatus": {
+							"value": {
+								"value": "@variables('vLogStatusFailure')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "lks_azure_db_monitor",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
+		"variables": {
+			"vLogStatusSuccess": {
+				"type": "String",
+				"defaultValue": "S"
+			},
+			"vLogStatusFailure": {
+				"type": "String",
+				"defaultValue": "F"
+			}
+		},
 		"annotations": []
 	}
 }

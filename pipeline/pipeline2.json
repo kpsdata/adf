@@ -22,7 +22,7 @@
 					}
 				},
 				"linkedServiceName": {
-					"referenceName": "lks_hive_cluster",
+					"referenceName": "lks_hive_on_demand_cluster",
 					"type": "LinkedServiceReference"
 				}
 			}
