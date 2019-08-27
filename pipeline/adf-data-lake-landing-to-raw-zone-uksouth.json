@@ -188,7 +188,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Source_Dataset",
+						"referenceName": "ds_landing_file",
 						"type": "DatasetReference"
 					},
 					"enableLogging": true
