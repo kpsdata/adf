@@ -1,5 +1,5 @@
 {
-	"name": "adf-data-lake-landing-to-raw-zone",
+	"name": "adf-data-lake-landing-to-raw-zone-uksouth",
 	"properties": {
 		"description": "This pipeline moves files from the landing zone to the raw zone without any modification. Storing files in the JSON format",
 		"activities": [
