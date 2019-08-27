@@ -44,7 +44,7 @@
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
-						"activity": "Move File From Landing To Raw Zone",
+						"activity": "Remove File From Landing",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -166,6 +166,29 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Remove File From Landing",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Move File From Landing To Raw Zone",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"enableLogging": true
+				}
 			}
 		],
 		"variables": {
