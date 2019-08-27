@@ -1,0 +1,183 @@
+{
+	"name": "adf-data-lake-raw-zone",
+	"properties": {
+		"description": "This pipeline moves files from the landing zone to the raw zone without any modification. Storing files in the JSON format",
+		"activities": [
+			{
+				"name": "Start Logging",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_BatchLogStart]",
+					"storedProcedureParameters": {
+						"PipelineName": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "lks_azure_db_monitor",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "End Success Logging",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Move File From Landing To Raw Zone",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_BatchLogEnd]",
+					"storedProcedureParameters": {
+						"BatchLogStatus": {
+							"value": {
+								"value": "@variables('vLogStatusSuccess')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "lks_azure_db_monitor",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "End Failure Logging",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Move File From Landing To Raw Zone",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[sp_BatchLogEnd]",
+					"storedProcedureParameters": {
+						"BatchLogStatus": {
+							"value": {
+								"value": "@variables('vLogStatusFailure')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PipelineRunId": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "lks_azure_db_monitor",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Move File From Landing To Raw Zone",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Start Logging",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BlobSource",
+						"recursive": true
+					},
+					"sink": {
+						"type": "BlobSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_Dataset",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Target_Dataset",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"variables": {
+			"vLogStatusSuccess": {
+				"type": "String",
+				"defaultValue": "S"
+			},
+			"vLogStatusFailure": {
+				"type": "String",
+				"defaultValue": "F"
+			}
+		},
+		"annotations": []
+	}
+}
