@@ -1,0 +1,12 @@
+{
+	"name": "lks_azure_db_monitor",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=ctssql001.database.windows.net;initial catalog=stg;user id=ctssql001",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkNUUy1BREYtREVWLVVLU09VVEhfNjMxY2ZiZjMtZTEyZS00MmM2LTg4NmYtMzUwNGRkOWM1ZWVjIg0KfQ=="
+		}
+	}
+}
