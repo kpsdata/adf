@@ -187,6 +187,10 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataset": {
+						"referenceName": "Source_Dataset",
+						"type": "DatasetReference"
+					},
 					"enableLogging": true
 				}
 			}
