@@ -52,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf-data-lake-landing-to-raw-zone-uksouth",
+						"referenceName": "pipeline3",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
