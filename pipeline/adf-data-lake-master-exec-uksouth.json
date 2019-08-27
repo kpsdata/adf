@@ -52,7 +52,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "adf-data-lake-raw-zone",
+						"referenceName": "adf-data-lake-landing-to-raw-zone",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
