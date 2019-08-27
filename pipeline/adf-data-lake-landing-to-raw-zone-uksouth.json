@@ -195,7 +195,8 @@
 						"linkedServiceName": {
 							"referenceName": "lks_datalake_storage",
 							"type": "LinkedServiceReference"
-						}
+						},
+						"path": "landingzone"
 					},
 					"enableLogging": true
 				}
