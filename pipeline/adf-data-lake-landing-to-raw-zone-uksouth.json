@@ -191,6 +191,12 @@
 						"referenceName": "ds_landing_file",
 						"type": "DatasetReference"
 					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "lks_datalake_storage",
+							"type": "LinkedServiceReference"
+						}
+					},
 					"enableLogging": true
 				}
 			}
